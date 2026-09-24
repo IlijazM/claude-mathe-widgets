@@ -1,7 +1,7 @@
 /*! claude-mathe-widgets · ableiten.js · https://github.com/IlijazM/claude-mathe-widgets */
 (function(){
 var CSS=[
-".md{position:relative;padding:.75rem 0 2.4rem;--fs:24px;--acc:var(--text-accent,#185FA5);--mut:var(--text-secondary,#73726c);--ok:var(--text-success,#3B6D11);--warn:var(--text-warning,#BA7517);--wbg:var(--bg-warning,#FAEEDA);font-family:var(--font-voice,Georgia),Georgia,'Times New Roman',serif;color:var(--text-primary,#1f1e1d)}",
+".md{position:relative;padding:.75rem 0 1rem;--fs:24px;--acc:var(--text-accent,#185FA5);--mut:var(--text-secondary,#73726c);--ok:var(--text-success,#3B6D11);--warn:var(--text-warning,#BA7517);--wbg:var(--bg-warning,#FAEEDA);font-family:var(--font-voice,Georgia),Georgia,'Times New Roman',serif;color:var(--text-primary,#1f1e1d)}",
 ".md .bk{position:relative}",
 ".md .bk+.bk{margin-top:1.2rem;padding-top:1rem;border-top:1.5px dashed var(--border-strong,rgba(0,0,0,.2))}",
 ".md .sc{overflow-x:auto;padding:.5rem 2px .9rem}",
@@ -31,7 +31,6 @@ var CSS=[
 ".md .cb:hover{background:var(--surface-1,#f5f4ef)}.md .cb.on{border-style:solid;border-color:transparent;background:transparent;color:var(--text-primary,#1f1e1d);font-size:1em;padding:0 .1em;animation:mdpop .45s cubic-bezier(.3,1.7,.5,1)}",
 ".md .tp{font:14px/1.5 var(--font-sans,system-ui),system-ui,sans-serif;color:var(--mut);text-align:center;margin:.55rem auto 0;max-width:34em;min-height:0}",
 ".md .tp div{animation:mdin .35s ease-out both}.md .tp div+div{margin-top:.25rem}",
-".md .hp{position:absolute;right:0;bottom:0;width:32px;height:32px;padding:0;border:none;background:transparent;color:var(--text-muted,#9a9893);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:8px}.md .hp:hover{color:var(--acc)}",
 ".md .fx{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}.md .cf{position:absolute;display:block;pointer-events:none}",
 ".md .kb{position:absolute;z-index:6;display:flex;gap:4px;padding:4px;background:var(--surface-2,#fff);border:1.5px dashed var(--border-strong,rgba(0,0,0,.25));border-radius:12px;animation:mdin .15s ease-out}",
 ".md .kb button{-webkit-tap-highlight-color:transparent;min-width:42px;height:36px;border:none;border-radius:9px;background:var(--surface-1,#f5f4ef);color:inherit;font:20px var(--font-voice,Georgia),Georgia,serif;cursor:pointer}",
@@ -156,7 +155,6 @@ const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 const fi=n=>String(n).replace('-','−');
 const fr=(a,b)=>'<span class="fr"><span>'+a+'</span><span>'+b+'</span></span>';
 function qh(q,inl){if(q.d===1)return fi(q.n);const s=q.n<0?'−':'';return inl?s+Math.abs(q.n)+'/'+q.d:s+fr(Math.abs(q.n),q.d)}
-const qt=q=>q.d===1?fi(q.n):fi(q.n)+'/'+q.d;
 const X='<i>x</i>';
 const strip=nd=>nd.k==='par'&&nd.terms.length===1?(nd.terms[0].s>0?nd.terms[0].a:{k:'neg',a:nd.terms[0].a}):nd;
 function h(nd,inl){switch(nd.k){
@@ -176,7 +174,6 @@ function mono(c,e){
  return cs+X+(q1(e)?'':'<sup>'+qh(e,1)+'</sup>')}
 const nameH=(b,p)=>'<i>'+esc(b)+'</i>'+(p===0?'':p===1?'′':p===2?'″':p===3?'‴':'<sup>('+p+')</sup>');
 const nameT=(b,p)=>b+(p===0?'':p===1?'′':p===2?'″':p===3?'‴':'('+p+')');
-const plain=html=>{const d=document.createElement('div');d.innerHTML=html;d.querySelectorAll('.fr').forEach(f=>{f.textContent='('+f.children[0].textContent+')/('+f.children[1].textContent+')'});d.querySelectorAll('sup').forEach(s=>{s.textContent='^('+s.textContent+')'});return d.textContent.replace(/\s+/g,' ').trim()};
 
 /* ---------- Eingaben prüfen ---------- */
 function parseAns(raw){let s=String(raw).replace(/[−–]/g,'-').replace(/,/g,'.').replace(/\s+/g,'').replace(/[÷:]/g,'/');
@@ -331,16 +328,6 @@ function fit(){let fs=24;host.style.setProperty('--fs',fs+'px');const W=host.cli
  let guard=0;while(guard++<20&&fs>15&&blocks.some(B=>B.gd.scrollWidth>W-4)){fs-=1;host.style.setProperty('--fs',fs+'px')}}
 let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(fit,120)});
 
-/* ---------- Rettungsring ---------- */
-function help(){const B=blocks[blocks.length-1];if(!B)return;
- const rowTxt=(lab,cells)=>plain(lab)+' '+cells.map(parts=>parts.map(pt=>{if(typeof pt==='string')return plain(pt);const g=pt.g;const v=g.ok?qt(g.want)+' ✓':g.el&&g.el.value.trim()?g.el.value.trim()+(g.tries?' ✗':''):' ';return(pt.fr!=null?plain(pt.fr)+'/':'')+(pt.sup?'^':'')+'['+v+']'}).join('')).join(' ');
- const f0=plain(nameH(B.base,B.p)+'('+X+') = ')+plain(B.r1.map(c=>c.innerHTML).join(' '));
- const rows=B.stages.slice(0,B.cur+1).map(S=>rowTxt(S.lab,S.cells));
- const msg='Hilf mir beim '+(AB?'Ableiten':'Aufleiten')+' von '+f0+'. Mein Stand: '+rows.join(' | ')+(B.done?' (fertig)':'')+(!AB&&B.cur===B.stages.length-1?(B.C?' (+ C ist dran)':' (+ C fehlt noch)'):'');
- if(typeof sendPrompt==='function')sendPrompt(msg);else console.log(msg)}
-const hp=document.createElement('button');hp.className='hp';hp.type='button';hp.setAttribute('aria-label','Hilfe im Chat holen');hp.title='Hilfe im Chat holen';
-hp.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M15 15l3.35 3.35M9 15l-3.35 3.35M5.65 5.65L9 9M18.35 5.65L15 9"/></svg>';
-hp.onclick=help;host.appendChild(hp);
 
 mkBlock(terms0,NAME,0);
 }

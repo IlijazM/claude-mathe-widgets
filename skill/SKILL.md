@@ -398,11 +398,12 @@ Fehlt `mode` oder `expr` oder ist das JSON kaputt, zeigt das Widget eine rote Me
 - Die nächste Zeile erscheint erst, wenn alle Lücken der aktuellen Zeile stimmen. Feedback nur auf „prüfen“: richtig = grün, falsch = sanft markiert, man darf nochmal. Ab dem zweiten Fehlversuch an derselben Lücke erscheint ein kleiner Tipp (nie die Lösung).
 - Gleichwertig zählt: `1/4`, `0,25`, `0.25`, `−` und `-`; gerundete Dezimalzahlen wie `0,67` für $\frac{2}{3}$ auch. Auf dem Handy gibt es kleine Tasten für `−`, `/` und `,`.
 - Am Ende wird die Ergebniszeile hübsch zusammengefasst ($x^1 \to x$, $x^0$ fällt weg, $+\,(-6) \to -\,6$), doppelt unterstrichen, Konfetti. 🎉
-- Der Rettungsring unten rechts schickt den Stand in den Chat („Hilf mir beim Ableiten von … Mein Stand: … [3 ✓] … [5 ✗] …“).
 
 ### Wenn jemand Hilfe will
 
-Zuerst aufmuntern – „Du bist nicht dumm“ passt hier gut. Dann **nicht die Lösung nennen**, sondern bei der Lücke mit ✗ (oder der ersten leeren) ansetzen: eine Leitfrage zur passenden Regel, gern mit Mini-Beispiel ($x^2 \to 2x^1$). Nicht neu rendern – die Eingaben stehen noch im Widget, die Person tippt dort einfach weiter.
+Das Widget hat keinen Hilfe-Knopf – die Person schreibt einfach in den Chat, wo sie hängt. Ist unklar, bei welcher Lücke, kurz nachfragen (welche Spalte, was eingetippt wurde).
+
+Zuerst aufmuntern – „Du bist nicht dumm“ passt hier gut. Dann **nicht die Lösung nennen**, sondern genau bei dieser Lücke ansetzen: eine Leitfrage zur passenden Regel, gern mit Mini-Beispiel ($x^2 \to 2x^1$). Nicht neu rendern – die Eingaben stehen noch im Widget, die Person tippt dort einfach weiter.
 
 ### Grenzen
 
