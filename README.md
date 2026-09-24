@@ -13,14 +13,12 @@ Widgets und Zeichnungen für den Claude-Skill **Mathe-Lehrer**. Die Dateien werd
 ## Einbinden
 
 ```html
-<div id="ml">Widget lädt …</div>
-<script>var CONFIG={equation:"2x + 3 = 13",target:"x",steps:[]};</script>
+<div id="ml" data-config='{"equation":"2x + 3 = 13","target":"x","steps":[]}'>Widget lädt …</div>
 <script src="https://cdn.jsdelivr.net/gh/IlijazM/claude-mathe-widgets@v1/umform.js"></script>
 ```
 
 ```html
-<div id="mp">Widget lädt …</div>
-<script>var CONFIG={functions:[{name:"f",expr:"2x + 1"}],x:[-5,5]};</script>
+<div id="mp" data-config='{"functions":[{"name":"f","expr":"2x + 1"}],"x":[-5,5]}'>Widget lädt …</div>
 <script src="https://cdn.jsdelivr.net/gh/IlijazM/claude-mathe-widgets@v1/funktionen.js"></script>
 ```
 
@@ -29,12 +27,14 @@ Widgets und Zeichnungen für den Claude-Skill **Mathe-Lehrer**. Die Dateien werd
 <script src="https://cdn.jsdelivr.net/gh/IlijazM/claude-mathe-widgets@v1/bilder.js"></script>
 ```
 
+Die Einstellungen stehen als JSON im Attribut `data-config`, nicht in einem eigenen `<script>`: Der Claude-Chat führt Skripte nicht zuverlässig in Reihenfolge aus. Alternativ geht `window.CONFIG` (das Widget wartet bis zu 3 s darauf) oder der Aufruf `MatheUmform(cfg)` / `MatheFunktionen(cfg)`. Fehlt die CONFIG, erscheint eine Fehlermeldung statt einer Beispiel-Gleichung.
+
 `data-texte` ersetzt die Texte im Bild der Reihe nach (getrennt mit `|`, leere Stellen bleiben unverändert).
 
 ## Veröffentlichen & Versionen
 
 1. Repo **öffentlich** auf GitHub pushen (jsDelivr kann keine privaten Repos ausliefern).
-2. Tag `v1` setzen: `git tag v1 && git push origin v1`.
+2. Tag `v1` setzen: `git tag v1 && git push origin v1` – oder auf GitHub unter **Releases → Create a new release** mit neuem Tag `v1`.
 3. Test im Browser: <https://cdn.jsdelivr.net/gh/IlijazM/claude-mathe-widgets@v1/umform.js> muss den Code zeigen.
 
 Der Skill lädt fest `@v1`, damit Änderungen am `main`-Branch nie laufende Chats kaputt machen. Für Updates: Änderungen committen, neuen Tag `v2` setzen und im Skill `@v1` → `@v2` ersetzen. (Einen bestehenden Tag zu verschieben klappt wegen des CDN-Caches nicht zuverlässig.)

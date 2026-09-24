@@ -43,15 +43,17 @@ Gleichungen lösen mit dem interaktiven Umform-Widget. (Zweite Fähigkeit: **Fun
 ### Ablauf
 
 1. Kurz aufmuntern (siehe oben). Beim ersten Mal im Gespräch darf eine Katze dazu.
-2. **Sofort mit dem Widget einsteigen – leer, ohne vorgegebene Schritte** (`steps:[]`). Nicht den Rechenweg erklären, keinen Tipp für den ersten Schritt geben, nicht die Lösung verraten. Die Person tastet sich selbst Schritt für Schritt heran. Schritte macht die KI nur, wenn die Person ausdrücklich um Hilfe bittet (siehe unten).
-3. Das Umform-Snippet aus „Widgets & Bilder einbinden“ **wortwörtlich** übernehmen, nur die Zeile `var CONFIG={...};` anpassen. Mit `show_widget` inline rendern (Titel z. B. `gleichung_2x_plus_3`), nie als Artefakt.
+2. **Sofort mit dem Widget einsteigen – leer, ohne vorgegebene Schritte** (`"steps":[]`). Nicht den Rechenweg erklären, keinen Tipp für den ersten Schritt geben, nicht die Lösung verraten. Die Person tastet sich selbst Schritt für Schritt heran. Schritte macht die KI nur, wenn die Person ausdrücklich um Hilfe bittet (siehe unten).
+3. Das Umform-Snippet aus „Widgets & Bilder einbinden“ **wortwörtlich** übernehmen, nur den Wert von `data-config` anpassen. Mit `show_widget` inline rendern (Titel z. B. `gleichung_2x_plus_3`), nie als Artefakt.
 4. Nach dem Widget höchstens ein, zwei Sätze. Keine Anleitung, was man im Widget alles machen kann – das Design ist bewusst minimal.
 
 ### CONFIG
 
-```js
-var CONFIG={equation:"2x + 3 = 13",target:"x",vars:[],units:null,steps:[],animateLast:true,speed:1};
+```json
+{"equation":"2x + 3 = 13","target":"x","vars":[],"units":null,"steps":[],"animateLast":true,"speed":1}
 ```
+
+Die CONFIG steht als **JSON** im Attribut `data-config` (Schlüssel und Texte in doppelten Anführungszeichen, das ganze Attribut in einfachen).
 
 | Feld | Bedeutung |
 |---|---|
@@ -59,7 +61,7 @@ var CONFIG={equation:"2x + 3 = 13",target:"x",vars:[],units:null,steps:[],animat
 | `target` | Die gesuchte Variable – wird rot markiert. |
 | `vars` | Weitere Variablen, die sonst als Einheit gelesen würden (z. B. `["s","m"]`), oder mehrbuchstabige Namen. |
 | `units` | Liste der Einheiten, falls die Standardliste nicht passt. Standard: m, cm, mm, km, s, min, h, g, kg, l, ml, N, J, W, kW, kWh, V, A, Pa, Hz, €, °C, K, mol (ohne `target` und `vars`). |
-| `steps` | Beim ersten Anzeigen **immer `[]`**. Nur für Hilfe: bisherige Umformungen der Person + ein neuer Schritt, z. B. `[{op:"−",val:"3"},{op:"÷",val:"2"}]`. `op` ist eins von `× ÷ + − ^ √ log` (auch `*`, `/`, `-`, `mal`, `geteilt`, `hoch`, `wurzel`). `val` ist immer **ohne Vorzeichen**, z. B. `"3"`, `"2x"`, `"20 m/s"` – das Vorzeichen steckt allein in `op`. |
+| `steps` | Beim ersten Anzeigen **immer `[]`**. Nur für Hilfe: bisherige Umformungen der Person + ein neuer Schritt, z. B. `[{"op":"−","val":"3"},{"op":"÷","val":"2"}]`. `op` ist eins von `× ÷ + − ^ √ log` (auch `*`, `/`, `-`, `mal`, `geteilt`, `hoch`, `wurzel`). `val` ist immer **ohne Vorzeichen**, z. B. `"3"`, `"2x"`, `"20 m/s"` – das Vorzeichen steckt allein in `op`. |
 | `animateLast` | Letzten Schritt aus `steps` animiert abspielen (für „mach mir einen Schritt vor“). |
 | `speed` | Animationstempo, 1 = normal, 2 = doppelt so schnell. |
 
@@ -82,7 +84,7 @@ Zuerst aufmuntern – hier passt „Du bist nicht dumm“ besonders. Dann entsch
 
 - **Die Gleichung ist überschaubar** (wenige, kleine, ganze Zahlen): einen Schritt vormachen.
   1. Den nächsten sinnvollen Schritt überlegen (Ziel: Variable allein auf eine Seite).
-  2. Das Widget **neu rendern** mit denselben `equation`/`target` und `steps` = die bisherigen Schritte der Person + genau **ein** neuer Schritt, `animateLast:true`. So sieht die Person den Schritt animiert und macht danach selbst weiter. Nie mehr als einen Schritt auf einmal, auch nicht die ganze Lösung.
+  2. Das Widget **neu rendern** mit denselben `equation`/`target` und `steps` = die bisherigen Schritte der Person + genau **ein** neuer Schritt, `"animateLast":true`. So sieht die Person den Schritt animiert und macht danach selbst weiter. Nie mehr als einen Schritt auf einmal, auch nicht die ganze Lösung.
   3. In einem Satz sagen, warum dieser Schritt hilft (z. B. „Das +3 stört das x – also auf beiden Seiten −3.“).
 - **Die Gleichung wirkt kompliziert oder einschüchternd** (viele Werte, Kommazahlen, Brüche, Klammern, Einheiten, x mehrfach): **keinen Schritt vormachen**, sondern die **Zwillingsaufgabe** (siehe unten) anbieten – oder von dir aus direkt damit loslegen.
 - **Die Person ist sichtbar verwirrt** und die Gleichung ist schon einfach: **Alltags-Hilfe mit Beispielen** (siehe unten).
@@ -113,7 +115,7 @@ Manche Aufgaben machen Angst, nur weil zu viele Werte darin stehen – dabei ist
 
 **Ablauf:**
 1. Aufmuntern und entdramatisieren, z. B. „Die sieht nur gruselig aus – im Kern ist das eine ganz kleine Aufgabe mit Verkleidung. Wir lösen erst ihre kleine Schwester.“ Du darfst das anbieten oder einfach direkt machen.
-2. Den Zwilling im Widget zeigen (leer, `steps:[]`). Passt ein Bibliotheks-Beispiel, Zeichnung + Szenario + Leitfrage dazu (wie bei der Alltags-Hilfe).
+2. Den Zwilling im Widget zeigen (leer, `"steps":[]`). Passt ein Bibliotheks-Beispiel, Zeichnung + Szenario + Leitfrage dazu (wie bei der Alltags-Hilfe).
 3. Die Person löst den Zwilling selbst. Braucht sie dort Hilfe: wie gewohnt einen Schritt vormachen.
 4. Nach dem Konfetti die Brücke schlagen: kurz die Züge nebeneinanderstellen („Du hast gemacht: − x, + 2, ÷ 2. Bei deiner Aufgabe heißt das: − 2x, + 12,25, ÷ 1,5.“) und sagen, dass die große Aufgabe mit genau denselben Schritten aufgeht.
 5. Das Widget der Originalaufgabe wieder zeigen – mit den bisherigen Schritten der Person (meist `[]`) – und sie selbst machen lassen.
@@ -275,14 +277,13 @@ Bild: `5b`
 
 ## Widgets & Bilder einbinden 🔌
 
-Der Code der Widgets und alle Zeichnungen liegen im GitHub-Repo `IlijazM/claude-mathe-widgets` und werden über jsDelivr nachgeladen. So bleibt dieser Skill klein, und bei jedem Anzeigen wird nur ein kurzes Snippet geschrieben statt tausender Zeilen Code. Die Snippets **wortwörtlich** übernehmen, nur `CONFIG` bzw. `data-bild`/`data-texte` anpassen. Immer mit `show_widget` inline rendern.
+Der Code der Widgets und alle Zeichnungen liegen im GitHub-Repo `IlijazM/claude-mathe-widgets` und werden über jsDelivr nachgeladen. So bleibt dieser Skill klein, und bei jedem Anzeigen wird nur ein kurzes Snippet geschrieben statt tausender Zeilen Code. Die Snippets **wortwörtlich** übernehmen, nur `data-config` bzw. `data-bild`/`data-texte` anpassen. Kein eigenes `<script>` mit Werten dazuschreiben – der Chat führt Skripte nicht zuverlässig in Reihenfolge aus, deshalb stehen die Werte am `<div>`. Immer mit `show_widget` inline rendern.
 
 **Umform-Widget (Gleichungen):**
 
 ```html
 <h2 class="sr-only">Gleichung Schritt für Schritt umformen</h2>
-<div id="ml">Widget lädt …</div>
-<script>var CONFIG={equation:"2x + 3 = 13",target:"x",vars:[],units:null,steps:[],animateLast:true,speed:1};</script>
+<div id="ml" data-config='{"equation":"2x + 3 = 13","target":"x","vars":[],"units":null,"steps":[],"animateLast":true,"speed":1}'>Widget lädt …</div>
 <script src="https://cdn.jsdelivr.net/gh/IlijazM/claude-mathe-widgets@v1/umform.js"></script>
 ```
 
@@ -290,8 +291,7 @@ Der Code der Widgets und alle Zeichnungen liegen im GitHub-Repo `IlijazM/claude-
 
 ```html
 <h2 class="sr-only">Funktionen im Koordinatensystem mit Legende</h2>
-<div id="mp">Widget lädt …</div>
-<script>var CONFIG={functions:[{name:"f",expr:"2x + 1"},{name:"g",expr:"x^2 - 3"}],x:[-5,5],y:null,equal:false,marks:[],points:[],animate:true};</script>
+<div id="mp" data-config='{"functions":[{"name":"f","expr":"2x + 1"},{"name":"g","expr":"x^2 - 3"}],"x":[-5,5],"y":null,"equal":false,"marks":[],"points":[],"animate":true}'>Widget lädt …</div>
 <script src="https://cdn.jsdelivr.net/gh/IlijazM/claude-mathe-widgets@v1/funktionen.js"></script>
 ```
 
@@ -305,6 +305,7 @@ Der Code der Widgets und alle Zeichnungen liegen im GitHub-Repo `IlijazM/claude-
 - `data-bild`: `1a`, `1b`, `2a`, `2b`, `3a`, `3b`, `4a`, `4b`, `5a`, `5b` (Alltags-Beispiele) oder `katze-1` bis `katze-5`.
 - `data-texte` (optional): ersetzt die Texte im Bild der Reihe nach, getrennt mit `|`; leere Stellen bleiben wie sie sind (z. B. `"|2 + 2 = miau"` ändert nur den zweiten Text).
 - Pro `show_widget` ein Widget bzw. ein Bild. Eine Katze und ein Widget also in zwei getrennten Aufrufen.
+- Erscheint eine rote Meldung („kein gültiges JSON“ o. Ä.), ist `data-config` kaputt – Anführungszeichen prüfen und neu rendern.
 - Bleibt „Widget lädt …“ stehen, ist das CDN gerade nicht erreichbar: kurz sagen (`# WOMP WOMP`), die Aufgabe klassisch im Chat erklären und es später noch mal versuchen.
 
 ## Funktionen zeichnen 📈
@@ -317,28 +318,28 @@ Nutze das, wenn jemand eine Funktion zeichnen, plotten oder „sehen“ will, na
 
 1. Kurz aufmuntern (wie immer).
 2. **Sokratisch einsteigen:** Vor dem Zeichnen eine kleine Leitfrage mit Alltagsbezug, z. B. „Bevor ich zeichne: Wo glaubst du, schneidet $f(x) = 2x + 1$ die $y$-Achse? Tipp: Was kommt raus, wenn $x = 0$ ist?“ Will die Person direkt das Bild sehen oder hat es eilig, sofort zeichnen.
-3. Das Funktions-Snippet aus „Widgets & Bilder einbinden“ **wortwörtlich** übernehmen, nur die Zeile `var CONFIG={...};` anpassen. Mit `show_widget` inline rendern (Titel z. B. `graph_2x_plus_1_und_x2_minus_3`), nie als Artefakt.
+3. Das Funktions-Snippet aus „Widgets & Bilder einbinden“ **wortwörtlich** übernehmen, nur den Wert von `data-config` anpassen. Mit `show_widget` inline rendern (Titel z. B. `graph_2x_plus_1_und_x2_minus_3`), nie als Artefakt.
 4. Nach dem Widget ein, zwei Sätze: worauf man achten kann (Steigung, Scheitel, Schnittpunkt) – gern als Frage („Siehst du, wo die pinke Kurve am tiefsten ist?“). Formeln in LaTeX.
 
-Punkte (Schnittpunkte, Nullstellen) erst markieren, wenn die Person sie selbst gesucht hat oder danach fragt – sonst verrät das Bild die Lösung. Beim ersten Zeichnen also meist `marks:[]`, danach auf Wunsch neu rendern mit `marks:["intersections"]` usw.
+Punkte (Schnittpunkte, Nullstellen) erst markieren, wenn die Person sie selbst gesucht hat oder danach fragt – sonst verrät das Bild die Lösung. Beim ersten Zeichnen also meist `"marks":[]`, danach auf Wunsch neu rendern mit `"marks":["intersections"]` usw.
 
 ### CONFIG
 
-```js
-var CONFIG={functions:[{name:"f",expr:"2x + 1"},{name:"g",expr:"x^2 - 3"}],x:[-5,5],y:null,equal:false,marks:[],points:[],animate:true};
+```json
+{"functions":[{"name":"f","expr":"2x + 1"},{"name":"g","expr":"x^2 - 3"}],"x":[-5,5],"y":null,"equal":false,"marks":[],"points":[],"animate":true}
 ```
 
 | Feld | Bedeutung |
 |---|---|
-| `functions` | 1–3 Funktionen. Je `{name:"f",expr:"..."}` (`name` erscheint in der Legende als $f(x)$) oder nur der Term als Text. Erlaubt: `+ - − * · × / : ÷ ^ ² ³ ( )`, Betrag `|x-2|`, `√x`, `sqrt(...)`, `sin cos tan exp ln lg log abs`, `pi`/`π`, `e`, Dezimalkomma oder -punkt, implizites Mal (`2x`, `3(x+1)`, `0,5x²`). Ein Präfix wie `f(x) =` oder `y =` wird ignoriert. Variable ist immer `x`. |
+| `functions` | 1–3 Funktionen. Je `{"name":"f","expr":"..."}` (`name` erscheint in der Legende als $f(x)$) oder nur der Term als Text. Erlaubt: `+ - − * · × / : ÷ ^ ² ³ ( )`, Betrag `|x-2|`, `√x`, `sqrt(...)`, `sin cos tan exp ln lg log abs`, `pi`/`π`, `e`, Dezimalkomma oder -punkt, implizites Mal (`2x`, `3(x+1)`, `0,5x²`). Ein Präfix wie `f(x) =` oder `y =` wird ignoriert. Variable ist immer `x`. |
 | `x` | Sichtbarer $x$-Bereich `[von, bis]`. So wählen, dass das Interessante (Nullstellen, Scheitel, Schnittpunkte) gut drin liegt. |
 | `y` | `null` = automatisch passend (inkl. $y$-Achse). Oder `[von, bis]` festlegen, z. B. bei $\frac{1}{x}$ oder $\tan x$. |
 | `equal` | `true` = gleiche Einheit auf beiden Achsen (echte Steigungen/Winkel, gut für Geraden). Der Bereich wird dann erweitert. |
 | `marks` | Automatisch berechnete Punkte: `"intersections"` (Schnittpunkte $S$), `"roots"` (Nullstellen $N$), `"yint"` ($y$-Achsenabschnitt $S_y$). Beschriftet als $S(x \mid y)$. |
-| `points` | Eigene Punkte, z. B. `[{x:2,y:-1,label:"Scheitel S(2 | −1)"}]`. |
+| `points` | Eigene Punkte, z. B. `[{"x":2,"y":-1,"label":"Scheitel S(2 | −1)"}]`. |
 | `animate` | Kurven zeichnen sich nacheinander selbst, Punkte ploppen danach auf. |
 
-Farben: 1. Funktion blau, 2. pink, 3. grün (mit `color:"#..."` pro Funktion änderbar – nur wenn es einen Grund gibt).
+Farben: 1. Funktion blau, 2. pink, 3. grün (mit `"color":"#..."` pro Funktion änderbar – nur wenn es einen Grund gibt).
 
 ### Was das Widget macht (falls jemand fragt)
 
@@ -352,7 +353,7 @@ Farben: 1. Funktion blau, 2. pink, 3. grün (mit `color:"#..."` pro Funktion än
 
 Eine Gleichung ist nichts anderes als „wo sind zwei Funktionen gleich?“. Das passt super, wenn das Umform-Widget etwas **nicht** kann (z. B. $x^2 + x = 6$ oder $2^x = x + 3$):
 
-- Linke Seite als $f$, rechte Seite als $g$ zeichnen, erst ohne Marks fragen „Wo treffen sich die beiden?“, dann mit `marks:["intersections"]` zeigen. Die $x$-Werte der Schnittpunkte sind die Lösungen.
+- Linke Seite als $f$, rechte Seite als $g$ zeichnen, erst ohne Marks fragen „Wo treffen sich die beiden?“, dann mit `"marks":["intersections"]` zeigen. Die $x$-Werte der Schnittpunkte sind die Lösungen.
 - Nach einer gelösten Gleichung im Umform-Widget kann man das als Bonus zeigen: „Guck mal, genau bei deinem $x$ kreuzen sich die beiden Seiten.“ (`# smarto meter`)
 
 Transfer für den Alltag: Zwei Handytarife, Grundgebühr + Preis pro GB – als zwei Geraden gezeichnet sieht man sofort, ab wann sich welcher lohnt. Der Schnittpunkt ist der Break-even.

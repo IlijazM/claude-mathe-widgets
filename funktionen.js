@@ -2,15 +2,30 @@
 (function(){
 var CSS=".mp{position:relative;padding:.5rem 0 1rem;--ax:var(--text-secondary,#73726c);--gr:var(--border,rgba(0,0,0,.08));font-family:var(--font-sans,system-ui),system-ui,sans-serif;color:var(--text-primary,#1f1e1d)}\n.mp svg{display:block;width:100%;height:auto;touch-action:none;user-select:none}\n.mp .tl{font-size:12px;fill:var(--ax)}.mp .al{font:italic 16px var(--font-voice,Georgia),Georgia,serif;fill:var(--text-primary,#1f1e1d)}\n.mp .pl{font-size:12px;fill:var(--text-primary,#1f1e1d);paint-order:stroke;stroke:var(--surface-0,#fff);stroke-width:4px;stroke-linejoin:round}\n.mp .cv{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}\n.mp .lg{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 12px;margin-top:.5rem}\n.mp .li{display:inline-flex;align-items:center;gap:10px;padding:6px 12px;border:0.5px solid var(--border-strong,rgba(0,0,0,.16));border-radius:var(--radius,8px);background:transparent;cursor:pointer;font:18px var(--font-voice,Georgia),Georgia,serif;color:var(--text-primary,#1f1e1d);height:auto}\n.mp .li.off{opacity:.4}.mp .li.off .sw{background:transparent!important}\n.mp .sw{width:22px;height:4px;border-radius:2px;flex-shrink:0}\n.mp .li i{font-style:italic}.mp .li sup{font-size:.62em;vertical-align:.6em;line-height:0}\n.mp .hv{font:13px var(--font-sans,system-ui),system-ui,sans-serif;color:var(--text-secondary,#73726c);min-width:0}\n.mp .err{font-size:13px;color:var(--text-danger,#A32D2D);text-align:center;padding:4px 0}\n@keyframes mpdraw{to{stroke-dashoffset:0}}\n@keyframes mppop{0%{transform:scale(0)}70%{transform:scale(1.4)}100%{transform:scale(1)}}\n.mp .dt{transform-box:fill-box;transform-origin:center;animation:mppop .45s ease-out backwards}";
 var HTML="<svg id=\"mps\" viewBox=\"0 0 680 440\" role=\"img\" aria-label=\"Koordinatensystem mit Funktionsgraphen\"></svg><div class=\"lg\" id=\"mpl\"></div>";
-var DEFAULT={functions:[{name:"f",expr:"2x + 1"},{name:"g",expr:"x^2 - 3"}],x:[-5,5],y:null,equal:false,marks:[],points:[],animate:true};
+function readCfg(host){
+ var a=host.getAttribute('data-config');
+ if(a){try{return JSON.parse(a)}catch(e){throw new Error('data-config ist kein gültiges JSON: '+e.message)}}
+ return window.CONFIG||null;
+}
+function fail(host,msg){host.className='';host.innerHTML='<div style="font:13px system-ui,sans-serif;color:var(--text-danger,#A32D2D);text-align:center;padding:8px 0">'+String(msg).replace(/</g,'&lt;')+'</div>'}
+function start(host,cfg){
+ if(!document.getElementById("mp-css")){var st=document.createElement('style');st.id="mp-css";st.textContent=CSS;document.head.appendChild(st)}
+ host.className="mp";host.innerHTML=HTML;
+ try{run(cfg)}catch(e){fail(host,'Widget-Fehler: '+(e&&e.message||e))}
+}
 function boot(){
  var host=document.getElementById("mp");
  if(!host){host=document.createElement('div');host.id="mp";document.body.appendChild(host)}
- if(!document.getElementById("mp-css")){var st=document.createElement('style');st.id="mp-css";st.textContent=CSS;document.head.appendChild(st)}
- host.className="mp";host.innerHTML=HTML;
- var cfg=window.CONFIG||DEFAULT;
- try{run(cfg)}catch(e){host.insertAdjacentHTML('beforeend','<div style="font:13px system-ui;color:var(--text-danger,#A32D2D);text-align:center">Widget-Fehler: '+String(e&&e.message||e).replace(/</g,'&lt;')+'</div>')}
+ if(host.getAttribute('data-started'))return;
+ var t0=Date.now();
+ (function tryIt(){
+  var cfg;try{cfg=readCfg(host)}catch(e){return fail(host,e.message)}
+  if(cfg){host.setAttribute('data-started','1');return start(host,cfg)}
+  if(Date.now()-t0<3000)return setTimeout(tryIt,50);
+  fail(host,'Keine CONFIG gefunden – data-config am Container fehlt.');
+ })();
 }
+window["MatheFunktionen"]=function(cfg){var host=document.getElementById("mp");if(host){host.setAttribute('data-started','1');start(host,cfg)}};
 function run(CONFIG){
 (function(){
 const C=CONFIG,W=680,H=440,PL=44,PR=24,PT=22,PB=36,NS='http://www.w3.org/2000/svg';
