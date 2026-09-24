@@ -1,0 +1,16 @@
+name: jsDelivr-Cache leeren
+on:
+  release:
+    types: [published]
+  push:
+    branches: [main]
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          for f in umform.js funktionen.js bilder.js; do
+            for ref in main 1; do
+              curl -fsS "https://purge.jsdelivr.net/gh/${{ github.repository }}@$ref/$f" || true
+            done
+          done
